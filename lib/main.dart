@@ -21,13 +21,14 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(226, 233, 226, 255),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
               'Welcome to Quiz App',
-              style: TextStyle(fontSize: 24),
+              style: TextStyle(fontSize: 38),
             ),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -37,7 +38,20 @@ class SplashScreen extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => const QuizScreen()),
                 );
               },
-              child: const Text('Get Started'),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: const Color.fromARGB(255, 244, 239, 239),
+                elevation: 5,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: const Text(
+                'Get Started',
+                style: TextStyle(fontSize: 28, color: Colors.black),
+              ),
             ),
           ],
         ),
@@ -266,29 +280,29 @@ class QuizResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double buttonWidth = MediaQuery.of(context).size.width * 0.9;
-    double buttonHeight = MediaQuery.of(context).size.height * 0.1;
-
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
             'Your score: $totalScore',
-            style: const TextStyle(fontSize: 34, color: Colors.white),
+            style: const TextStyle(fontSize: 34, color: Colors.black),
           ),
           const SizedBox(height: 30),
           ElevatedButton(
             onPressed: () => resetQuiz(),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
-              backgroundColor: Colors.transparent,
-              side: const BorderSide(color: Colors.white),
-              fixedSize: Size(buttonWidth, buttonHeight),
+              backgroundColor: const Color.fromARGB(255, 244, 239, 239),
+              elevation: 5,
+              padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
             child: const Text(
               'Restart Quiz',
-              style: TextStyle(fontSize: 28, color: Colors.white),
+              style: TextStyle(fontSize: 28, color: Colors.black),
             ),
           ),
         ],
