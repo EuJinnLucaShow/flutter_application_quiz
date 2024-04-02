@@ -10,7 +10,38 @@ class QuizzApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: QuizScreen(),
+      home: SplashScreen(),
+    );
+  }
+}
+
+class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Welcome to Quiz App',
+              style: TextStyle(fontSize: 24),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const QuizScreen()),
+                );
+              },
+              child: const Text('Get Started'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -39,10 +70,10 @@ class QuizScreenState extends State<QuizScreen> {
     {
       'questionText': 'Who wrote "Romeo and Juliet"?',
       'answers': [
-        {'text': 'Charles Dickens', 'score': 0},
-        {'text': 'William Shakespeare', 'score': 100},
-        {'text': 'Mark Twain', 'score': 0},
-        {'text': 'Jane Austen', 'score': 0},
+        {'text': 'Dickens', 'score': 0},
+        {'text': 'Shakespeare', 'score': 100},
+        {'text': 'Twain', 'score': 0},
+        {'text': 'Austen', 'score': 0},
       ],
     },
     {
@@ -82,21 +113,12 @@ class QuizScreenState extends State<QuizScreen> {
       ],
     },
     {
-      'questionText': 'Who painted the Mona Lisa?',
-      'answers': [
-        {'text': 'Pablo Picasso', 'score': 0},
-        {'text': 'Leonardo da Vinci', 'score': 100},
-        {'text': 'Vincent van Gogh', 'score': 0},
-        {'text': 'Michelangelo', 'score': 0},
-      ],
-    },
-    {
       'questionText': 'What is the largest ocean on Earth?',
       'answers': [
-        {'text': 'Atlantic Ocean', 'score': 0},
-        {'text': 'Indian Ocean', 'score': 0},
-        {'text': 'Pacific Ocean', 'score': 100},
-        {'text': 'Arctic Ocean', 'score': 0},
+        {'text': 'Atlantic', 'score': 0},
+        {'text': 'Indian', 'score': 0},
+        {'text': 'Pacific', 'score': 100},
+        {'text': 'Arctic', 'score': 0},
       ],
     },
     {
@@ -106,15 +128,6 @@ class QuizScreenState extends State<QuizScreen> {
         {'text': 'Mercury', 'score': 100},
         {'text': 'Venus', 'score': 0},
         {'text': 'Jupiter', 'score': 0},
-      ],
-    },
-    {
-      'questionText': 'Who wrote "To Kill a Mockingbird"?',
-      'answers': [
-        {'text': 'J.K. Rowling', 'score': 0},
-        {'text': 'Harper Lee', 'score': 100},
-        {'text': 'Stephen King', 'score': 0},
-        {'text': 'Ernest Hemingway', 'score': 0},
       ],
     },
   ];
@@ -150,7 +163,7 @@ class QuizScreenState extends State<QuizScreen> {
   }
 }
 
-class QuizQuestion extends StatelessWidget {
+class QuizQuestion extends StatefulWidget {
   final Map<String, dynamic> question;
   final Function(int) answerQuestion;
 
@@ -161,7 +174,18 @@ class QuizQuestion extends StatelessWidget {
   });
 
   @override
+  QuizQuestionState createState() => QuizQuestionState();
+}
+
+class QuizQuestionState extends State<QuizQuestion> {
+  int? selectedAnswerIndex;
+  bool answerSelected = false;
+
+  @override
   Widget build(BuildContext context) {
+    double buttonWidth = MediaQuery.of(context).size.width * 0.4;
+    double buttonHeight = MediaQuery.of(context).size.height * 0.08;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -173,40 +197,60 @@ class QuizQuestion extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              question['questionText'],
+              widget.question['questionText'],
               textAlign: TextAlign.center,
               style: const TextStyle(
-                  fontSize: 35,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black),
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
           ),
         ),
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          childAspectRatio: (100 / 40),
-          padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 50),
-          mainAxisSpacing: 2.0,
-          crossAxisSpacing: 7.0,
-          children: question['answers'].map<Widget>((answer) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5),
-              child: ElevatedButton(
-                onPressed: () => answerQuestion(answer['score']),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 244, 239, 239),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+        Container(
+          color: Colors.white,
+          child: GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            childAspectRatio: (buttonWidth / buttonHeight),
+            padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 50),
+            mainAxisSpacing: 8.0,
+            crossAxisSpacing: 8.0,
+            children: List.generate(widget.question['answers'].length, (index) {
+              Map<String, dynamic> answer = widget.question['answers'][index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Future.delayed(const Duration(milliseconds: 500), () {
+                      setState(() {
+                        answerSelected = true;
+                        selectedAnswerIndex = index;
+                      });
+                    });
+                    widget.answerQuestion(answer['score']);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 244, 239, 239),
+                    fixedSize: Size(buttonWidth, buttonHeight),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        answer['text'],
+                        style:
+                            const TextStyle(fontSize: 17, color: Colors.black),
+                      ),
+                    ],
                   ),
                 ),
-                child: Text(
-                  answer['text'],
-                  style: const TextStyle(fontSize: 17, color: Colors.black),
-                ),
-              ),
-            );
-          }).toList(),
+              );
+            }),
+          ),
         ),
       ],
     );
