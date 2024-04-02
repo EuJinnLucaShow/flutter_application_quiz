@@ -136,7 +136,7 @@ class QuizScreenState extends State<QuizScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 72, 163, 196),
+      backgroundColor: const Color.fromARGB(226, 233, 226, 255),
       body: _currentQuestionIndex < questions.length
           ? QuizQuestion(
               question: questions[_currentQuestionIndex],
@@ -162,9 +162,6 @@ class QuizQuestion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double buttonWidth = MediaQuery.of(context).size.width * 0.4;
-    double buttonHeight = MediaQuery.of(context).size.height * 0.08;
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -188,18 +185,20 @@ class QuizQuestion extends StatelessWidget {
         GridView.count(
           crossAxisCount: 2,
           shrinkWrap: true,
-          childAspectRatio: (buttonWidth / buttonHeight),
+          childAspectRatio: (100 / 40),
           padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 50),
-          mainAxisSpacing: 8.0,
-          crossAxisSpacing: 8.0,
+          mainAxisSpacing: 2.0,
+          crossAxisSpacing: 7.0,
           children: question['answers'].map<Widget>((answer) {
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
+              padding: const EdgeInsets.symmetric(vertical: 5),
               child: ElevatedButton(
                 onPressed: () => answerQuestion(answer['score']),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 244, 239, 239),
-                  fixedSize: Size(buttonWidth, buttonHeight),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                 ),
                 child: Text(
                   answer['text'],
